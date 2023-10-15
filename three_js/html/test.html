@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>triangle</title>
+    <script id="vertex-shader" type="x-shader/x-vertex">
+        attribute vec4 vPosition;
+        void main()
+        {
+            gl_Position = vPosition;
+        }
+    </script> <!-- below we must specify a precision-->
+    <script id = "fragment-shader" type="x-shader/x-fragment">
+        precision mediump float;
+        void main()
+        {
+            gl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );
+        }
+    </script>
+    <script type="text/javascript" src="/Common/webgl-utils.js"></script>
+    <script type="text/javascript" src="/Common/initShaders.js"></script>
+    <script type="text/javascript" src="triangle.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+    <canvas id="gl-canvas" width="512" height="512"></canvas>
+    <script src="/three_js/three.min.js"></script>
+    <script src = "/three_js/GLTFLoader.js"></script>
+    <script>
+        let scene, camera, renderer, geometry, material, cube;
+
+        function init() {
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xdddddd);
+
+            camera = new THREE.PerspectiveCamera(40, window.innerWidth/window.innerHeight,1,5000);
+            camera.rotation.y = 45/180*Math.PI;
+            camera.position.x = 800;
+            camera.position.y = 100;
+            camera.position.z = 1000;
+
+            // light to illuminate our model
+
+            hlight = new THREE.AmbientLight (0x404040, 100);
+            scene.add(hlight);
+
+            renderer = new THREE.WebGLRenderer({antialias:true});
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            geometry = new THREE.BoxGeometry(1,1,1);
+            material = new THREE.MeshBasicMaterial ({ color:0xff0000});
+            cube = new THREE.Mesh(geometry, material);
+            scene.add(cube)
+
+            cube.position.z = -5;
+
+
+
+            let loader = new THREE.GLTFLoader();
+            loader.load('/3D/scene.gltf', function(gltf){
+                banana = gltf.scene.children[0];
+                banana.scale.set(0.5,0.5,0.5);
+                scene.add(gltf.scene);
+                renderer.render(scene,camera);
+            });
+        }
+        init();
+    </script>
+</body>
+</html>
